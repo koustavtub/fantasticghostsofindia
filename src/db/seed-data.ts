@@ -113,19 +113,59 @@ Unlike mindless bhoots, the vetala chooses when to speak — and its riddles oft
   {
     slug: 'brahmarakshasa',
     name: 'Brahmarakshasa',
-    alternateNames: ['Brahma Rakshasa', 'Rakshasa Brahmin'],
+    alternateNames: ['Brahma Rakshasa', 'Rakshasa Brahmin', 'Brahmadaitya', 'Bromhodaityo', 'Brahmdaityo'],
     region: 'Pan-India',
     gender: 'Male',
-    summary: 'The ghost of a learned Brahmin who misused sacred knowledge — enormously powerful, cunning, and hungry for ritual offerings.',
+    summary: 'The ghost of a learned Brahmin who misused sacred knowledge — enormously powerful and hungry for ritual offerings. In Bengal, the milder Brahmadaitya is often counted as a refined cousin of the same curse.',
     appearance: 'Monstrous form with matted hair, protruding fangs, and the sacred thread (*janeu*) still visible across a hairy chest. May appear initially as a dignified pandit before revealing true shape.',
     behavior: 'Haunts ancient temples, libraries, and banyan groves. Demands elaborate food offerings; punishes those who interrupt rituals. Can curse entire lineages.',
-    lore: `When a Brahmin scholar dies while clinging to pride, misusing mantras for personal gain, or denying proper rites, he may rise as a **Brahmarakshasa** — retaining Vedic knowledge but stripped of humanity.
+    lore: `## Origin and the fall from dharma
 
-Temple chronicles in Varanasi and Ujjain record such beings chained by earlier *shankaracharyas* beneath stone slabs, fed daily offerings to prevent wrath.
+When a Brahmin scholar dies while clinging to pride, misusing mantras for personal gain, or denying proper rites, he may rise as a **Brahmarakshasa** — retaining Vedic knowledge but stripped of humanity.
 
-They occupy a terrifying middle rank: neither common bhoot nor cosmic asura, but a fallen sage whose hunger for *brahmins’* respect persists beyond death.`,
+The *Garuda Purana* lists several paths to this fate: performing rites for payment alone, teaching the Vedas to the unworthy, breaking vows of celibacy, or dying violently before funeral rites are complete. In either case, the soul does not pass cleanly into ancestral rest; it lingers with every shloka memorised in life, now bent toward hunger, wrath, and dominion.
+
+### Two roads to the same tree
+
+Folklore disagrees on which sin matters most. In western and Deccan tellings, **misuse of knowledge** is paramount — the scholar who sold mantras or cursed villages from arrogance. In other accounts, any **unnatural death** (*akal mrityu*) of a learned Brahmin suffices: murder, suicide, accident, or burial without proper *antim sanskar*. Both traditions agree on the outcome: a being that remembers how to chant, but no longer remembers mercy.
+
+## Chained beneath the temple
+
+Temple chronicles in **Varanasi** and **Ujjain** record such beings chained by earlier *shankaracharyas* beneath stone slabs, fed daily offerings to prevent wrath.
+
+In Kerala, the Thirunakkara Shiva temple at Kottayam maintains a separate shrine where a Brahmarakshasa idol receives oil lamps and food — not worshipped as a god, but appeased as a dangerous guardian of sacred ground. Similar outer-wall idols appear across Maharashtra and Karnataka; villagers leave rice and lamp-black at dusk rather than invite a scholar-ghost’s attention inside the sanctum.
+
+### Mayurbhatta and the peepal tree
+
+A seventh-century legend ties the poet **Mayurbhatta** to a Brahmarakshasa at the Deo Sun Temple in Bihar. The spirit hung inverted from a peepal tree, repeating every verse of the *Surya Shataka* as Mayurbhatta composed it — an uncanny echo of stolen scholarship. The poet finally recited through his nose; lacking a nose, the being fled, and the tree withered. The tale captures the Brahmarakshasa’s curse: immense learning deployed as pure obstruction.
+
+## Rank among spirits
+
+They occupy a terrifying middle rank: neither common *bhoot* nor cosmic *asura*, but a fallen sage whose hunger for *brahmins’* respect persists beyond death.
+
+Unlike the hungry *preta* or the flesh-eating *pishacha*, the Brahmarakshasa retains ritual status — the sacred thread may still hang across a hairy chest, fangs notwithstanding. Some stories grant them power to **bestow boons** as well as curses; kings and ascetics who pleased a Brahmarakshasa received gold or secret knowledge, though the price was seldom small.
+
+## Brahmarakshasa and Brahmadaitya
+
+Across the subcontinent, the learned dead are not told one way. In **Bengali folklore**, the **Brahmadaitya** (*Bromhodaityo*, *Brahmdaityo*) is often described as the **elite among ghosts** — the “king of kings” whom other spirits respect.
+
+| | Brahmarakshasa | Brahmadaitya |
+|---|---|---|
+| **Region** | Pan-India; strong in Puranic and Deccan lore | Bengal and eastern traditions |
+| **Temperament** | Fierce, demanding, potentially cannibal | Refined, often benign; “a bit obnoxious” |
+| **Appearance** | Monstrous: fangs, matted hair, horns in some accounts | Fair, tall, saint-like feet; dhoti, *janeu*, hookah on a banyan |
+| **Diet** | Elaborate offerings; may hunger for the living | Strict vegetarian; Brahminical purity maintained |
+| **Role in stories** | Curses lineages, guards forbidden knowledge | Helps woodcutters, grants magic gifts, settles disputes among ghosts |
+
+### One curse, two temperaments
+
+Scholars and storytellers rarely treat the names as strict synonyms. The **Brahmarakshasa** emphasises the *rakshasa* half of the equation — demonic strength fused with Vedic recall. The **Brahmadaitya** emphasises the *daitya* or elevated ghost: still uncanny, still obsessed with Sanskrit and shastra, but more likely to smoke a hookah atop a banyan than to devour a trespasser.
+
+Many villagers would say both arise from the same moral failure — a Brahmin who died wrong, or lived wrong — yet **culture shapes the haunting**. A Maharashtrian temple wards a wrathful outer-wall guardian; a Bengali grandmother tells of a Brahmadaitya who rewards honesty with buried treasure. Ishwar Chandra Vidyasagar’s Bangla ghost canon, rooted in the *Betaal Panchabingsati*, sits closer to this eastern register: witty, aristocratic spirits rather than only monsters.
+
+Whether feared or faintly comic, both figures warn the same lesson: **knowledge without humility does not end at the pyre**. The mantra outlives the man, and the village must feed what it cannot exorcise.`,
     protection: 'Never mock ritual or interrupt *yajna*. Temple priests perform specific *Brahmarakshasa puja* where hauntings are documented. Turmeric, neem, and reading of *Garuda Purana* chapters are household safeguards.',
-    tags: ['brahmin', 'powerful', 'temple', 'scholar', 'cursed'],
+    tags: ['brahmin', 'powerful', 'temple', 'scholar', 'cursed', 'bengali', 'comparative-lore'],
     images: [],
   },
   {

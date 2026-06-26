@@ -131,6 +131,27 @@
     @apply italic text-ink/80;
   }
 
+  .prose-lore h2 {
+    @apply font-display text-xl text-ink mt-8 mb-3 first:mt-0;
+  }
+
+  .prose-lore h3 {
+    @apply font-display text-lg text-ink/90 mt-6 mb-2;
+  }
+
+  .prose-lore table {
+    @apply w-full text-base border-collapse my-4;
+  }
+
+  .prose-lore th,
+  .prose-lore td {
+    @apply border border-gold/30 px-3 py-2 text-left align-top;
+  }
+
+  .prose-lore th {
+    @apply bg-gold/10 font-semibold text-ink;
+  }
+
   .search-highlight {
     @apply bg-gold/40 text-ink px-0.5 rounded-sm;
   }
