@@ -1,0 +1,1 @@
+ALTER TABLE "ghosts" DROP COLUMN "classification";

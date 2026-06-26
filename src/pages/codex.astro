@@ -1,0 +1,98 @@
+---
+import BookLayout from '../layouts/BookLayout.astro';
+import GhostCard from '../components/GhostCard.astro';
+import { getFilterOptions, getRegionFilterCounts, listGhosts } from '../lib/ghosts';
+import { getRegionFilterLabel, isRegionFilterSlug } from '../lib/india-regions';
+
+const regionParam = Astro.url.searchParams.get('region') ?? undefined;
+const tag = Astro.url.searchParams.get('tag') ?? undefined;
+const region = regionParam && isRegionFilterSlug(regionParam) ? regionParam : undefined;
+
+let ghostList = [];
+let regionFilters: { slug: string; label: string; count: number }[] = [];
+let tags: string[] = [];
+
+try {
+  ghostList = await listGhosts({ region, tag });
+  regionFilters = await getRegionFilterCounts();
+  const filters = await getFilterOptions();
+  tags = filters.tags;
+} catch {
+  ghostList = [];
+}
+
+const activeRegionLabel = region ? getRegionFilterLabel(region) : undefined;
+---
+
+<BookLayout title="The Codex — Fantastic Ghosts of India">
+  <div class="page-enter">
+    <header class="text-center mb-10">
+      <h1 class="font-display text-3xl md:text-4xl text-gold tracking-wide mb-3">The Codex</h1>
+      <p class="text-parchment/60 text-lg max-w-xl mx-auto">
+        Browse the catalogue of spirits catalogued from village lore, scripture, and whispered tales.
+      </p>
+    </header>
+
+    <form method="get" action="/codex" class="max-w-xl mx-auto mb-8 space-y-4">
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="field-label" for="region">Region</label>
+          <select id="region" name="region" class="field-input text-base">
+            <option value="">All regions</option>
+            {regionFilters.map((item) => (
+              <option value={item.slug} selected={region === item.slug}>
+                {item.label} ({item.count})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label class="field-label" for="tag">Tag</label>
+          <select id="tag" name="tag" class="field-input text-base">
+            <option value="">All tags</option>
+            {tags.map((t) => (
+              <option value={t} selected={tag === t}>{t}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button type="submit" class="btn-primary">Apply filters</button>
+        {(region || tag) && (
+          <a href="/codex" class="btn-secondary">Clear all</a>
+        )}
+      </div>
+    </form>
+
+    {(activeRegionLabel || tag) && (
+      <p class="text-center text-sm text-parchment/50 mb-8">
+        Showing
+        {activeRegionLabel && <span> spirits from <span class="text-gold">{activeRegionLabel}</span></span>}
+        {activeRegionLabel && tag && <span> · </span>}
+        {tag && <span> tagged <span class="text-gold">{tag}</span></span>}
+        <span class="text-parchment/40"> ({ghostList.length})</span>
+      </p>
+    )}
+
+    {ghostList.length === 0 ? (
+      <div class="text-center py-16 paper-panel ornate-border max-w-md mx-auto">
+        <p class="font-display text-xl text-ink/60 mb-2">The pages are blank</p>
+        <p class="text-ink/40">No spirits match your filters yet.</p>
+      </div>
+    ) : (
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {ghostList.map((ghost) => (
+          <GhostCard ghost={ghost} />
+        ))}
+      </div>
+    )}
+  </div>
+</BookLayout>
+
+<script>
+  document.querySelectorAll('form[action="/codex"] select').forEach((select) => {
+    select.addEventListener('change', () => {
+      select.closest('form')?.requestSubmit();
+    });
+  });
+</script>

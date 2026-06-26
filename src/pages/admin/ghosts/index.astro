@@ -1,0 +1,66 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { listGhosts } from '../../../lib/ghosts';
+
+let ghostList = [];
+
+try {
+  ghostList = await listGhosts();
+} catch {
+  ghostList = [];
+}
+
+const deleted = Astro.url.searchParams.get('deleted');
+---
+
+<AdminLayout title="Spirits — Admin">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="font-display text-2xl text-gold tracking-wide">Spirits</h1>
+    <a href="/admin/ghosts/new" class="btn-primary">+ New Entry</a>
+  </div>
+
+  {deleted && (
+    <div class="mb-6 p-3 border border-gold/30 bg-gold/10 text-gold text-sm">Entry deleted successfully.</div>
+  )}
+
+  {ghostList.length === 0 ? (
+    <p class="text-parchment/40">No entries yet. <a href="/admin/ghosts/new" class="text-gold hover:text-gold-light">Create one</a>.</p>
+  ) : (
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b border-gold/20 text-xs font-display tracking-widest uppercase text-parchment/50">
+            <th class="py-3 pr-4">Name</th>
+            <th class="py-3 pr-4">Region</th>
+            <th class="py-3 pr-4">Gender</th>
+            <th class="py-3 pr-4">Updated</th>
+            <th class="py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ghostList.map((ghost) => (
+            <tr class="border-b border-gold/10 hover:bg-gold/5 transition-colors">
+              <td class="py-3 pr-4">
+                <a href={`/ghost/${ghost.slug}`} class="text-parchment hover:text-gold transition-colors">{ghost.name}</a>
+              </td>
+              <td class="py-3 pr-4 text-parchment/70 text-sm">{ghost.region}</td>
+              <td class="py-3 pr-4 text-parchment/70 text-sm">{ghost.gender}</td>
+              <td class="py-3 pr-4 text-parchment/50 text-sm">
+                {ghost.updatedAt ? new Date(ghost.updatedAt).toLocaleDateString() : '—'}
+              </td>
+              <td class="py-3">
+                <div class="flex gap-3">
+                  <a href={`/admin/ghosts/${ghost.id}/edit`} class="text-xs font-display tracking-widest uppercase text-gold hover:text-gold-light">Edit</a>
+                  <form action={`/api/ghosts/${ghost.id}`} method="post" class="inline" onsubmit="return confirm('Delete this entry permanently?')">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="text-xs font-display tracking-widest uppercase text-crimson-light hover:text-crimson">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</AdminLayout>

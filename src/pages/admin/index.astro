@@ -1,0 +1,50 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getGhostCount, getRecentGhosts } from '../../lib/ghosts';
+
+let count = 0;
+let recent = [];
+
+try {
+  count = await getGhostCount();
+  recent = await getRecentGhosts(5);
+} catch {
+  count = 0;
+  recent = [];
+}
+---
+
+<AdminLayout title="Dashboard — Admin">
+  <h1 class="font-display text-2xl text-gold tracking-wide mb-8">Dashboard</h1>
+
+  <div class="grid sm:grid-cols-3 gap-6 mb-10">
+    <div class="paper-panel p-6 border border-gold/20">
+      <p class="font-display text-xs tracking-widest uppercase text-parchment/50 mb-2">Total Entries</p>
+      <p class="font-display text-4xl text-gold">{count}</p>
+    </div>
+    <a href="/admin/ghosts/new" class="paper-panel p-6 border border-gold/20 hover:border-gold transition-colors group">
+      <p class="font-display text-xs tracking-widest uppercase text-parchment/50 mb-2">Quick Action</p>
+      <p class="font-display text-lg text-gold group-hover:text-gold-light">+ New Spirit</p>
+    </a>
+    <a href="/codex" class="paper-panel p-6 border border-gold/20 hover:border-gold transition-colors group">
+      <p class="font-display text-xs tracking-widest uppercase text-parchment/50 mb-2">Public Site</p>
+      <p class="font-display text-lg text-gold group-hover:text-gold-light">View Codex →</p>
+    </a>
+  </div>
+
+  <section>
+    <h2 class="font-display text-sm tracking-widest uppercase text-gold/70 mb-4">Recently Updated</h2>
+    {recent.length === 0 ? (
+      <p class="text-parchment/40">No entries yet.</p>
+    ) : (
+      <ul class="space-y-2">
+        {recent.map((ghost) => (
+          <li class="flex items-center justify-between py-2 border-b border-gold/10">
+            <span class="text-parchment">{ghost.name}</span>
+            <a href={`/admin/ghosts/${ghost.id}/edit`} class="text-xs font-display tracking-widest uppercase text-gold hover:text-gold-light">Edit</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</AdminLayout>

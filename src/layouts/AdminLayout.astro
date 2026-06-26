@@ -1,0 +1,41 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Admin — Fantastic Ghosts of India' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-ink-light">
+    <div class="min-h-screen flex flex-col">
+      <header class="border-b border-gold/20 bg-ink/90">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <a href="/admin" class="font-display text-sm tracking-[0.15em] uppercase text-gold">
+            Admin Codex
+          </a>
+          <nav class="flex items-center gap-4 text-xs font-display tracking-widest uppercase">
+            <a href="/admin/ghosts" class="text-parchment/70 hover:text-gold transition-colors">Spirits</a>
+            <a href="/" class="text-parchment/70 hover:text-gold transition-colors">View Site</a>
+            <form action="/api/auth/logout" method="post">
+              <button type="submit" class="text-crimson-light hover:text-crimson transition-colors">Logout</button>
+            </form>
+          </nav>
+        </div>
+      </header>
+      <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-8">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

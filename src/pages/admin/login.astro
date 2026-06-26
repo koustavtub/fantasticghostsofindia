@@ -1,0 +1,28 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminLayout title="Login — Admin">
+  <div class="max-w-md mx-auto mt-16">
+    <div class="paper-panel p-8 border border-gold/20">
+      <h1 class="font-display text-2xl text-gold tracking-wide mb-2 text-center">Admin Access</h1>
+      <p class="text-parchment/50 text-center text-sm mb-8">Enter the codex keeper&apos;s password.</p>
+
+      {error === 'invalid' && (
+        <div class="mb-6 p-3 border border-crimson/50 bg-crimson/10 text-crimson-light text-sm text-center">
+          Invalid password.
+        </div>
+      )}
+
+      <form action="/api/auth/login" method="post" class="space-y-4">
+        <div>
+          <label class="field-label" for="password">Password</label>
+          <input class="field-input" type="password" id="password" name="password" required autofocus />
+        </div>
+        <button type="submit" class="btn-primary w-full">Enter</button>
+      </form>
+    </div>
+  </div>
+</AdminLayout>

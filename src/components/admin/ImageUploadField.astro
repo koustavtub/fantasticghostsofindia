@@ -1,0 +1,52 @@
+---
+interface Props {
+  existingImages?: string[];
+}
+
+const { existingImages = [] } = Astro.props;
+---
+
+<div class="md:col-span-2" data-image-upload>
+  <label class="field-label" for="images">Illustrations</label>
+  <p class="text-parchment/40 text-sm mb-3">
+    Upload multiple images. Stored in <code class="text-gold/70">uploads/ghosts/&lt;slug&gt;/</code>. First image is the cover.
+  </p>
+
+  {existingImages.length > 0 && (
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" data-existing-images>
+      {existingImages.map((src) => (
+        <div class="relative group border border-gold/20 bg-ink/40" data-existing-image>
+          <img src={src} alt="" class="w-full aspect-square object-cover" />
+          <input type="hidden" name="existingImages" value={src} />
+          <button
+            type="button"
+            class="absolute top-1 right-1 w-6 h-6 bg-crimson/90 text-parchment text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+            data-remove-image
+            aria-label="Remove image"
+          >
+            ×
+          </button>
+        </div>
+      ))}
+    </div>
+  )}
+
+  <input
+    class="field-input file:mr-4 file:py-2 file:px-4 file:border-0 file:bg-gold file:text-ink file:font-display file:text-xs file:tracking-widest file:uppercase file:cursor-pointer"
+    type="file"
+    id="images"
+    name="images"
+    accept="image/jpeg,image/png,image/webp,image/gif"
+    multiple
+  />
+</div>
+
+<script>
+  document.querySelectorAll('[data-image-upload]').forEach((section) => {
+    section.querySelectorAll('[data-remove-image]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        btn.closest('[data-existing-image]')?.remove();
+      });
+    });
+  });
+</script>

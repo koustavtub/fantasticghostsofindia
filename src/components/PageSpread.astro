@@ -1,0 +1,82 @@
+---
+import type { Ghost } from '../db/schema';
+import OrnamentBorder from './OrnamentBorder.astro';
+import ImageGallery from './ImageGallery.astro';
+import { renderMarkdown } from '../lib/markdown';
+
+interface Props {
+  ghost: Ghost;
+}
+
+const { ghost } = Astro.props;
+const loreHtml = renderMarkdown(ghost.lore);
+---
+
+<article class="page-enter">
+  <div class="grid lg:grid-cols-2 gap-0 lg:gap-0 paper-panel ornate-border overflow-hidden lg:book-spine-shadow">
+    <!-- Left page -->
+    <div class="p-6 md:p-10 border-b lg:border-b-0 lg:border-r border-gold/20 bg-parchment-dark/30">
+      <div class="w-full max-w-sm mx-auto mb-6 bg-ink/5 border border-gold/20 relative overflow-hidden h-[clamp(180px,42vw,420px)]">
+        <ImageGallery images={ghost.images} alt={`Illustration of ${ghost.name}`} />
+      </div>
+
+      <OrnamentBorder class="bg-parchment/50">
+        <h2 class="font-display text-xs tracking-[0.25em] uppercase text-gold mb-4">Quick Facts</h2>
+        <dl class="space-y-3 text-base">
+          <div>
+            <dt class="font-display text-[10px] tracking-widest uppercase text-ink/50">Region</dt>
+            <dd class="text-ink">{ghost.region}</dd>
+          </div>
+          <div>
+            <dt class="font-display text-[10px] tracking-widest uppercase text-ink/50">Gender</dt>
+            <dd class="text-ink">{ghost.gender}</dd>
+          </div>
+          {ghost.alternateNames.length > 0 && (
+            <div>
+              <dt class="font-display text-[10px] tracking-widest uppercase text-ink/50">Also Known As</dt>
+              <dd class="text-ink">{ghost.alternateNames.join(', ')}</dd>
+            </div>
+          )}
+          <div>
+            <dt class="font-display text-[10px] tracking-widest uppercase text-ink/50">Tags</dt>
+            <dd class="flex flex-wrap gap-1.5 mt-1">
+              {ghost.tags.map((tag) => (
+                <a href={`/codex?tag=${encodeURIComponent(tag)}`} class="text-xs px-2 py-0.5 border border-gold/30 text-ink/70 hover:border-gold hover:text-ink transition-colors">
+                  {tag}
+                </a>
+              ))}
+            </dd>
+          </div>
+        </dl>
+      </OrnamentBorder>
+    </div>
+
+    <!-- Right page -->
+    <div class="p-6 md:p-10">
+      <header class="mb-8 pb-6 border-b border-gold/20">
+        <h1 class="font-display text-3xl md:text-4xl text-ink mb-4">{ghost.name}</h1>
+        <p class="text-xl text-ink/80 italic leading-relaxed">{ghost.summary}</p>
+      </header>
+
+      <section class="mb-8">
+        <h2 class="font-display text-xs tracking-[0.25em] uppercase text-crimson mb-3">Appearance</h2>
+        <p class="text-lg text-ink/85 leading-relaxed">{ghost.appearance}</p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-xs tracking-[0.25em] uppercase text-crimson mb-3">Behavior</h2>
+        <p class="text-lg text-ink/85 leading-relaxed">{ghost.behavior}</p>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="font-display text-xs tracking-[0.25em] uppercase text-crimson mb-3">Lore &amp; History</h2>
+        <div class="prose-lore" set:html={loreHtml} />
+      </section>
+
+      <section class="p-4 border border-crimson/30 bg-crimson/5">
+        <h2 class="font-display text-xs tracking-[0.25em] uppercase text-crimson mb-3">Protection &amp; Remedies</h2>
+        <p class="text-lg text-ink/85 leading-relaxed">{ghost.protection}</p>
+      </section>
+    </div>
+  </div>
+</article>

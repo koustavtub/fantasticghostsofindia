@@ -1,0 +1,116 @@
+<div class="search-bar relative w-full max-w-md" data-search-root>
+  <form action="/search" method="get" class="relative" role="search">
+    <label for="search-input" class="sr-only">Search the codex</label>
+    <input
+      id="search-input"
+      name="q"
+      type="search"
+      autocomplete="off"
+      placeholder="Search spirits, regions, lore…"
+      class="w-full bg-ink/60 border border-gold/30 text-parchment placeholder:text-parchment/40
+        pl-10 pr-4 py-2.5 font-body text-lg focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+      data-search-input
+    />
+    <svg
+      class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold/60 pointer-events-none"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  </form>
+  <div
+    class="absolute top-full left-0 right-0 z-50 mt-1 paper-panel border border-gold/20 hidden max-h-80 overflow-y-auto"
+    data-search-results
+    role="listbox"
+    aria-label="Search suggestions"
+  ></div>
+</div>
+
+<script>
+  const roots = document.querySelectorAll('[data-search-root]');
+
+  roots.forEach((root) => {
+    const input = root.querySelector('[data-search-input]') as HTMLInputElement;
+    const resultsEl = root.querySelector('[data-search-results]') as HTMLDivElement;
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    let activeIndex = -1;
+
+    function hideResults() {
+      resultsEl.classList.add('hidden');
+      resultsEl.innerHTML = '';
+      activeIndex = -1;
+    }
+
+    function showResults() {
+      resultsEl.classList.remove('hidden');
+    }
+
+    function renderResults(items: Array<{ slug: string; name: string; region: string; summary: string }>) {
+      if (items.length === 0) {
+        resultsEl.innerHTML = '<p class="px-4 py-3 text-ink/60 text-sm">No spirits found.</p>';
+        showResults();
+        return;
+      }
+
+      resultsEl.innerHTML = items
+        .map(
+          (item, i) => `
+          <a href="/ghost/${item.slug}" class="block px-4 py-3 hover:bg-gold/10 border-b border-gold/10 last:border-0 transition-colors" data-index="${i}" role="option">
+            <span class="font-display text-ink text-sm">${item.name}</span>
+            <span class="text-xs text-gold/70 ml-2 uppercase tracking-wider">${item.region}</span>
+            <p class="text-ink/60 text-sm mt-0.5 line-clamp-1">${item.summary}</p>
+          </a>
+        `
+        )
+        .join('');
+      showResults();
+    }
+
+    async function fetchResults(query: string) {
+      if (query.length < 2) {
+        hideResults();
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=8`);
+        const data = await res.json();
+        renderResults(data.results ?? []);
+      } catch {
+        hideResults();
+      }
+    }
+
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fetchResults(input.value.trim()), 250);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const options = resultsEl.querySelectorAll('a[data-index]');
+      if (options.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, options.length - 1);
+        (options[activeIndex] as HTMLElement).focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        (options[activeIndex] as HTMLElement).focus();
+      } else if (e.key === 'Escape') {
+        hideResults();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) {
+        hideResults();
+      }
+    });
+  });
+</script>

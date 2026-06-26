@@ -1,0 +1,65 @@
+---
+import BookLayout from '../layouts/BookLayout.astro';
+import OrnamentBorder from '../components/OrnamentBorder.astro';
+import { getFeaturedGhost, getGhostCount } from '../lib/ghosts';
+
+let featured;
+let count = 0;
+
+try {
+  featured = await getFeaturedGhost();
+  count = await getGhostCount();
+} catch {
+  featured = undefined;
+  count = 0;
+}
+---
+
+<BookLayout showSearch={false}>
+  <div class="page-enter min-h-[70vh] flex flex-col items-center justify-center text-center">
+    <div class="paper-panel ornate-border p-10 md:p-16 max-w-2xl w-full relative">
+      <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-60"></div>
+
+      <p class="font-display text-xs tracking-[0.4em] uppercase text-gold/70 mb-6">
+        A Field Guide
+      </p>
+
+      <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-ink leading-tight mb-4">
+        Fantastic Ghosts<br />of India
+      </h1>
+
+      <div class="w-24 h-px bg-gold/50 mx-auto my-8"></div>
+
+      <p class="text-xl md:text-2xl text-ink/70 italic leading-relaxed mb-2">
+        An encyclopaedia of spirits, phantoms, and restless beings
+      </p>
+      <p class="text-lg text-ink/50 mb-10">
+        drawn from the folklore of the subcontinent
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
+        <a href="/codex" class="btn-primary">Open the Codex</a>
+        <a href="/search" class="btn-secondary">Search Spirits</a>
+      </div>
+
+      {count > 0 && (
+        <p class="font-display text-xs tracking-[0.2em] uppercase text-ink/40">
+          {count} entries catalogued
+        </p>
+      )}
+    </div>
+
+    {featured && (
+      <OrnamentBorder class="mt-12 max-w-lg w-full text-left bg-parchment/90">
+        <p class="font-display text-[10px] tracking-[0.3em] uppercase text-gold mb-2">Featured Entry</p>
+        <a href={`/ghost/${featured.slug}`} class="group">
+          <h2 class="font-display text-2xl text-ink group-hover:text-crimson transition-colors">{featured.name}</h2>
+          <p class="text-ink/70 mt-2 leading-relaxed">{featured.summary}</p>
+          <span class="inline-block mt-4 font-display text-xs tracking-widest uppercase text-gold group-hover:text-gold-light transition-colors">
+            Read entry →
+          </span>
+        </a>
+      </OrnamentBorder>
+    )}
+  </div>
+</BookLayout>

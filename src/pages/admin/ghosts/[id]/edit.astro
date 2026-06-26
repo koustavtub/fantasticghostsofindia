@@ -1,0 +1,31 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import GhostForm from '../../../../components/admin/GhostForm.astro';
+import { getGhostById } from '../../../../lib/ghosts';
+
+const { id } = Astro.params;
+const ghostId = Number(id);
+
+if (!ghostId || Number.isNaN(ghostId)) {
+  return Astro.redirect('/admin/ghosts');
+}
+
+let ghost;
+
+try {
+  ghost = await getGhostById(ghostId);
+} catch {
+  ghost = undefined;
+}
+
+if (!ghost) {
+  return Astro.redirect('/admin/ghosts');
+}
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminLayout title={`Edit ${ghost.name} — Admin`}>
+  <h1 class="font-display text-2xl text-gold tracking-wide mb-8">Edit: {ghost.name}</h1>
+  <GhostForm action={`/api/ghosts/${ghost.id}`} method="put" ghost={ghost} error={error ?? undefined} />
+</AdminLayout>

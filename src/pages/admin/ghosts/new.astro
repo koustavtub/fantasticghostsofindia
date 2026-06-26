@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import GhostForm from '../../../components/admin/GhostForm.astro';
+
+const error = Astro.url.searchParams.get('error');
+---
+
+<AdminLayout title="New Spirit — Admin">
+  <h1 class="font-display text-2xl text-gold tracking-wide mb-8">New Spirit Entry</h1>
+  <GhostForm action="/api/ghosts" error={error ?? undefined} />
+</AdminLayout>

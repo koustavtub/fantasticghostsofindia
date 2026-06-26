@@ -1,0 +1,25 @@
+---
+import type { Ghost } from '../db/schema';
+
+interface Props {
+  ghost: Ghost;
+}
+
+const { ghost } = Astro.props;
+---
+
+<a
+  href={`/ghost/${ghost.slug}`}
+  class="group block paper-panel ornate-border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gold/10"
+>
+  <h3 class="font-display text-xl text-ink group-hover:text-crimson transition-colors mb-3">
+    {ghost.name}
+  </h3>
+  <p class="text-ink/70 text-base leading-snug mb-3 line-clamp-2">{ghost.summary}</p>
+  <div class="flex flex-wrap gap-2 text-xs text-ink/50 font-display tracking-wider uppercase">
+    <span>{ghost.region}</span>
+    {ghost.tags.slice(0, 2).map((tag) => (
+      <span class="text-gold/70">· {tag}</span>
+    ))}
+  </div>
+</a>

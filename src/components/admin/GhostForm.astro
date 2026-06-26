@@ -1,0 +1,158 @@
+---
+import type { Ghost } from '../db/schema';
+import AutocompleteInput from './AutocompleteInput.astro';
+import ImageUploadField from './ImageUploadField.astro';
+import { mergeGenderOptions } from '../../lib/genders';
+import { mergeRegionOptions } from '../../lib/india-regions';
+import { getFilterOptions } from '../../lib/ghosts';
+
+interface Props {
+  ghost?: Ghost;
+  error?: string;
+  action: string;
+  method?: 'post' | 'put';
+}
+
+const { ghost, error, action, method = 'post' } = Astro.props;
+
+let regionOptions = mergeRegionOptions();
+let genderOptions = mergeGenderOptions();
+
+try {
+  const filters = await getFilterOptions();
+  regionOptions = mergeRegionOptions(filters.regions);
+  genderOptions = mergeGenderOptions(filters.genders);
+} catch {
+  // DB unavailable — static lists still work
+}
+
+const formData = {
+  name: ghost?.name ?? '',
+  slug: ghost?.slug ?? '',
+  alternateNames: ghost?.alternateNames.join(', ') ?? '',
+  region: ghost?.region ?? '',
+  gender: ghost?.gender ?? 'Unknown',
+  summary: ghost?.summary ?? '',
+  appearance: ghost?.appearance ?? '',
+  behavior: ghost?.behavior ?? '',
+  lore: ghost?.lore ?? '',
+  protection: ghost?.protection ?? '',
+  tags: ghost?.tags.join(', ') ?? '',
+};
+---
+
+<form action={action} method="POST" enctype="multipart/form-data" class="space-y-6" data-ghost-form>
+  {method === 'put' && <input type="hidden" name="_method" value="PUT" />}
+  {error && (
+    <div class="p-4 border border-crimson/50 bg-crimson/10 text-crimson-light text-sm">{error}</div>
+  )}
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div>
+      <label class="field-label" for="name">Name</label>
+      <input class="field-input" type="text" id="name" name="name" value={formData.name} required data-slug-source />
+    </div>
+    <div>
+      <label class="field-label" for="slug">Slug</label>
+      <input class="field-input" type="text" id="slug" name="slug" value={formData.slug} required pattern="[a-z0-9-]+" data-slug-target />
+    </div>
+    <AutocompleteInput
+      id="region"
+      name="region"
+      label="Region"
+      value={formData.region}
+      options={regionOptions}
+      placeholder="e.g. Kerala, Bengal, Pan-India…"
+      required
+    />
+    <AutocompleteInput
+      id="gender"
+      name="gender"
+      label="Gender"
+      value={formData.gender}
+      options={genderOptions}
+      placeholder="e.g. Female, Male, Variable…"
+      required
+    />
+    <div class="md:col-span-2">
+      <label class="field-label" for="alternateNames">Alternate Names (comma-separated)</label>
+      <input class="field-input" type="text" id="alternateNames" name="alternateNames" value={formData.alternateNames} />
+    </div>
+    <div class="md:col-span-2">
+      <label class="field-label" for="summary">Summary</label>
+      <textarea class="field-textarea" id="summary" name="summary" required rows="2">{formData.summary}</textarea>
+    </div>
+    <ImageUploadField existingImages={ghost?.images ?? []} />
+    <div class="md:col-span-2">
+      <label class="field-label" for="tags">Tags (comma-separated)</label>
+      <input class="field-input" type="text" id="tags" name="tags" value={formData.tags} />
+    </div>
+  </div>
+
+  <div>
+    <label class="field-label" for="appearance">Appearance</label>
+    <textarea class="field-textarea" id="appearance" name="appearance" required rows="4">{formData.appearance}</textarea>
+  </div>
+
+  <div>
+    <label class="field-label" for="behavior">Behavior</label>
+    <textarea class="field-textarea" id="behavior" name="behavior" required rows="4">{formData.behavior}</textarea>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-1">
+      <label class="field-label mb-0" for="lore">Lore (Markdown supported)</label>
+      <button type="button" class="text-xs text-gold hover:text-gold-light uppercase tracking-widest font-display" data-toggle-preview>
+        Toggle Preview
+      </button>
+    </div>
+    <textarea class="field-textarea font-mono text-base" id="lore" name="lore" required rows="8" data-markdown-source>{formData.lore}</textarea>
+    <div class="hidden mt-2 p-4 paper-panel prose-lore" data-markdown-preview></div>
+  </div>
+
+  <div>
+    <label class="field-label" for="protection">Protection &amp; Remedies</label>
+    <textarea class="field-textarea" id="protection" name="protection" required rows="4">{formData.protection}</textarea>
+  </div>
+
+  <div class="flex gap-4 pt-4">
+    <button type="submit" class="btn-primary">{ghost ? 'Save Changes' : 'Create Entry'}</button>
+    <a href="/admin/ghosts" class="btn-secondary">Cancel</a>
+  </div>
+</form>
+
+<script>
+  import { marked } from 'marked';
+
+  document.querySelectorAll('[data-ghost-form]').forEach((form) => {
+    const nameInput = form.querySelector('[data-slug-source]') as HTMLInputElement;
+    const slugInput = form.querySelector('[data-slug-target]') as HTMLInputElement;
+    const loreSource = form.querySelector('[data-markdown-source]') as HTMLTextAreaElement;
+    const lorePreview = form.querySelector('[data-markdown-preview]') as HTMLDivElement;
+    const togglePreview = form.querySelector('[data-toggle-preview]') as HTMLButtonElement;
+
+    let slugManuallyEdited = slugInput.value.length > 0 && slugInput.dataset.initial === slugInput.value;
+
+    slugInput.dataset.initial = slugInput.value;
+
+    slugInput.addEventListener('input', () => {
+      slugManuallyEdited = true;
+    });
+
+    nameInput?.addEventListener('input', () => {
+      if (slugManuallyEdited) return;
+      slugInput.value = nameInput.value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    });
+
+    togglePreview?.addEventListener('click', () => {
+      lorePreview.classList.toggle('hidden');
+      if (!lorePreview.classList.contains('hidden')) {
+        lorePreview.innerHTML = marked.parse(loreSource.value) as string;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,1 @@
+ALTER TABLE "ghosts" ADD COLUMN IF NOT EXISTS "gender" text DEFAULT 'Unknown' NOT NULL;

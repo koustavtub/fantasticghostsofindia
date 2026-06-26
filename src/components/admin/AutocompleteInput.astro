@@ -1,0 +1,129 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  value: string;
+  options: string[];
+  required?: boolean;
+  placeholder?: string;
+}
+
+const { id, name, label, value, options, required = false, placeholder } = Astro.props;
+---
+
+<div class="relative" data-autocomplete-root>
+  <label class="field-label" for={id}>{label}</label>
+  <input
+    type="text"
+    id={id}
+    name={name}
+    value={value}
+    required={required}
+    autocomplete="off"
+    placeholder={placeholder}
+    class="field-input"
+    role="combobox"
+    aria-autocomplete="list"
+    aria-expanded="false"
+    aria-controls={`${id}-listbox`}
+    data-autocomplete-input
+  />
+  <ul
+    id={`${id}-listbox`}
+    role="listbox"
+    class="absolute z-20 left-0 right-0 top-full mt-1 max-h-48 overflow-y-auto
+      bg-ink-light border border-gold/30 shadow-lg hidden"
+    data-autocomplete-list
+  ></ul>
+</div>
+
+<script define:vars={{ options, inputId: id }}>
+  const root = document.querySelector(`#${inputId}`)?.closest('[data-autocomplete-root]');
+  if (root) {
+    const input = root.querySelector('[data-autocomplete-input]');
+    const list = root.querySelector('[data-autocomplete-list]');
+    let activeIndex = -1;
+
+    function filterOptions(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return options.slice(0, 12);
+      return options
+        .filter((opt) => opt.toLowerCase().includes(q))
+        .slice(0, 12);
+    }
+
+    function hideList() {
+      list.classList.add('hidden');
+      list.innerHTML = '';
+      input.setAttribute('aria-expanded', 'false');
+      activeIndex = -1;
+    }
+
+    function selectOption(value) {
+      input.value = value;
+      hideList();
+      input.focus();
+    }
+
+    function renderList(matches) {
+      if (matches.length === 0) {
+        hideList();
+        return;
+      }
+
+      list.innerHTML = matches
+        .map(
+          (opt, i) =>
+            `<li role="option" data-index="${i}" data-value="${opt.replace(/"/g, '&quot;')}"
+              class="px-3 py-2 text-parchment text-base cursor-pointer hover:bg-gold/15 border-b border-gold/10 last:border-0">${opt}</li>`
+        )
+        .join('');
+
+      list.classList.remove('hidden');
+      input.setAttribute('aria-expanded', 'true');
+      activeIndex = -1;
+
+      list.querySelectorAll('[role="option"]').forEach((el) => {
+        el.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          selectOption(el.getAttribute('data-value') ?? '');
+        });
+      });
+    }
+
+    input.addEventListener('input', () => {
+      renderList(filterOptions(input.value));
+    });
+
+    input.addEventListener('focus', () => {
+      renderList(filterOptions(input.value));
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = list.querySelectorAll('[role="option"]');
+      if (items.length === 0) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        items[activeIndex].classList.add('bg-gold/20');
+        items.forEach((el, i) => { if (i !== activeIndex) el.classList.remove('bg-gold/20'); });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        items[activeIndex].classList.add('bg-gold/20');
+        items.forEach((el, i) => { if (i !== activeIndex) el.classList.remove('bg-gold/20'); });
+      } else if (e.key === 'Enter' && activeIndex >= 0) {
+        e.preventDefault();
+        selectOption(items[activeIndex].getAttribute('data-value') ?? '');
+      } else if (e.key === 'Escape') {
+        hideList();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target)) hideList();
+    });
+  }
+</script>

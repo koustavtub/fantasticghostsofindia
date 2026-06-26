@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+import SearchBar from '../components/SearchBar.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  showSearch?: boolean;
+}
+
+const {
+  title = 'Fantastic Ghosts of India',
+  description = 'An illustrated codex of spirits, phantoms, and restless beings from the folklore of the subcontinent.',
+  showSearch = true,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="min-h-screen flex flex-col">
+      <header class="border-b border-gold/20 bg-ink/80 backdrop-blur-sm sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <a href="/" class="font-display text-lg tracking-[0.15em] uppercase text-gold hover:text-gold-light transition-colors text-center sm:text-left">
+            Fantastic Ghosts
+          </a>
+          <nav class="flex items-center gap-6 text-sm font-display tracking-widest uppercase">
+            <a href="/codex" class="text-parchment/70 hover:text-gold transition-colors">Codex</a>
+            <a href="/search" class="text-parchment/70 hover:text-gold transition-colors">Search</a>
+          </nav>
+          {showSearch && (
+            <div class="w-full sm:w-auto sm:flex-1 sm:max-w-xs lg:max-w-md">
+              <SearchBar />
+            </div>
+          )}
+        </div>
+      </header>
+
+      <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-8 md:py-12">
+        <slot />
+      </main>
+
+      <footer class="border-t border-gold/10 py-8 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+          <p class="font-display text-xs tracking-[0.3em] uppercase text-parchment/40">
+            A Field Guide to Indian Folklore
+          </p>
+          <p class="text-parchment/30 text-sm mt-2">
+            Compiled from village lore, scripture, and whispered tales.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

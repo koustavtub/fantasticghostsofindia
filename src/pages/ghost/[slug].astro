@@ -1,0 +1,35 @@
+---
+import BookLayout from '../../layouts/BookLayout.astro';
+import PageSpread from '../../components/PageSpread.astro';
+import { getGhostBySlug } from '../../lib/ghosts';
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/codex');
+}
+
+let ghost;
+
+try {
+  ghost = await getGhostBySlug(slug);
+} catch {
+  ghost = undefined;
+}
+
+if (!ghost) {
+  return Astro.redirect('/404');
+}
+---
+
+<BookLayout
+  title={`${ghost.name} — Fantastic Ghosts of India`}
+  description={ghost.summary}
+>
+  <nav class="mb-6">
+    <a href="/codex" class="font-display text-xs tracking-widest uppercase text-gold/70 hover:text-gold transition-colors">
+      ← Back to Codex
+    </a>
+  </nav>
+  <PageSpread ghost={ghost} />
+</BookLayout>

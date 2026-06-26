@@ -1,0 +1,130 @@
+---
+interface Props {
+  images: string[];
+  alt: string;
+}
+
+const { images, alt } = Astro.props;
+---
+
+{images.length > 0 ? (
+  <div class="pswp-gallery-root h-full w-full" data-pswp-gallery>
+    {images.map((src, index) => (
+      <a
+        href={src}
+        class:list={[
+          'pswp-gallery__link',
+          index === 0 ? 'pswp-gallery__link--cover' : 'pswp-gallery__link--hidden',
+        ]}
+        data-pswp-alt={alt}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          src={src}
+          alt={index === 0 ? alt : ''}
+          class="pswp-gallery__img"
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+        {index === 0 && images.length > 1 && (
+          <span class="pswp-gallery__badge">+{images.length - 1} more</span>
+        )}
+      </a>
+    ))}
+  </div>
+) : (
+  <div class="pswp-gallery__placeholder">
+    <svg class="w-16 h-16 sm:w-20 sm:h-20 text-gold/30 mb-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+    </svg>
+    <p class="font-display text-[10px] sm:text-xs tracking-[0.3em] uppercase text-ink/40">Field Illustration</p>
+    <p class="font-display text-lg sm:text-xl text-ink/60 mt-1">{alt}</p>
+  </div>
+)}
+
+{images.length > 0 && (
+  <script>
+    import '../lib/photoswipe-init.ts';
+  </script>
+)}
+
+<style is:global>
+  .pswp-gallery-root {
+    position: relative;
+  }
+
+  .pswp-gallery__link--cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+
+  .pswp-gallery__link--cover:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  .pswp-gallery__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .pswp-gallery__link--cover:hover .pswp-gallery__img {
+    transform: scale(1.02);
+  }
+
+  .pswp-gallery__badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(26, 20, 16, 0.75);
+    color: var(--color-parchment);
+    font-family: var(--font-display);
+    font-size: 0.625rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    pointer-events: none;
+  }
+
+  .pswp-gallery__link--hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .pswp-gallery__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 10rem;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  /* PhotoSwipe theme — match codex palette */
+  .pswp {
+    --pswp-bg: #0c0a08;
+    --pswp-icon-color: #f4ead5;
+    --pswp-icon-color-secondary: #c9a227;
+    --pswp-icon-stroke-color: #c9a227;
+    --pswp-icon-stroke-width: 1.5px;
+    --pswp-error-text-color: #f4ead5;
+  }
+</style>
